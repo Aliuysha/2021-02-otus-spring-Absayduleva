@@ -1,14 +1,16 @@
 package ru.otus.tests;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ru.otus.tests.service.QuestionReader;
-import ru.otus.tests.service.QuestionWriter;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import ru.otus.tests.service.TestCreator;
 
+@Configuration
+@ComponentScan
 public class Main {
     public static void main(String[] args) {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("/spring-context.xml");
-        QuestionReader reader = context.getBean(QuestionReader.class);
-        QuestionWriter writer = context.getBean(QuestionWriter.class);
-        writer.writeQuestions(reader.readQuestions());
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
+        TestCreator testCreator = context.getBean(TestCreator.class);
+        testCreator.test();
     }
 }

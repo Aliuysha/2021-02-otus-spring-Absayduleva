@@ -1,14 +1,12 @@
 package ru.otus.tests.service;
 
+import org.springframework.stereotype.Component;
 import ru.otus.tests.domain.Question;
 
-import java.util.List;
-
+@Component
 public class ConsoleQuestionWriter implements QuestionWriter {
     @Override
-    public void writeQuestions(List<Question> questionList) {
-        for (Question question : questionList) {
-            System.out.println(question.getId() + ". " + question.getText());
-        }
+    public void writeQuestion(Question question) {
+        System.out.println("Question №" + question.getId() + ". " + question.getText());
     }
 }
