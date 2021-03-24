@@ -1,0 +1,5 @@
+test:
+  success: 3
+input:
+  csv-in: questions.csv
+  csv-in-ru: questions_ru_RU.csv

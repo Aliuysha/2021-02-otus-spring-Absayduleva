@@ -7,6 +7,6 @@ import ru.otus.tests.domain.Question;
 public class ConsoleQuestionWriter implements QuestionWriter {
     @Override
     public void writeQuestion(Question question) {
-        System.out.println("Question №" + question.getId() + ". " + question.getText());
+        System.out.println(question.getText());
     }
 }

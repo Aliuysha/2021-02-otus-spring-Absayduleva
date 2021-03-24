@@ -1,19 +1,20 @@
 package ru.otus.tests.service;
 
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import ru.otus.tests.domain.TestResult;
 
 import java.util.List;
 
-@Component
-@PropertySource("classpath:application.properties")
+@ConfigurationProperties(prefix = "test")
+@Configuration
 public class TestResultCreator {
+    private int success;
 
-    @Value("${test.success}")
-    private Integer testSuccess;
+    public void setSuccess(int success) {
+        this.success = success;
+    }
 
     public TestResult getResult(List<String> answers, List<String> rightAnswers) {
         int rightCount = 0;
@@ -22,7 +23,7 @@ public class TestResultCreator {
                 rightCount++;
             }
         }
-        if (rightCount >= testSuccess) {
+        if (rightCount >= success) {
             return TestResult.SUCCESSFUL;
         } else {
             return TestResult.FAIL;
