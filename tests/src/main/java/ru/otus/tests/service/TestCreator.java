@@ -1,7 +1,6 @@
 package ru.otus.tests.service;
 
 import org.springframework.stereotype.Service;
-import ru.otus.tests.domain.Person;
 import ru.otus.tests.domain.Question;
 import ru.otus.tests.domain.TestResult;
 
@@ -26,7 +25,6 @@ public class TestCreator {
     }
 
     public void test() {
-        Person person = testReader.readPerson();
         List<Question> questions = testReader.readQuestions();
         List<String> answers = new ArrayList<>();
         for (Question question : questions) {
