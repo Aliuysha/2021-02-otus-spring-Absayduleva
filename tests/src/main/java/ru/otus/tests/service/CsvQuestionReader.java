@@ -2,6 +2,7 @@ package ru.otus.tests.service;
 
 import com.opencsv.bean.CsvToBean;
 import org.springframework.stereotype.Component;
+import ru.otus.tests.config.CsvConfigMaster;
 import ru.otus.tests.domain.Question;
 
 import java.util.Collections;

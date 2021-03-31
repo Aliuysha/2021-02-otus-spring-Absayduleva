@@ -7,13 +7,19 @@ import java.util.Scanner;
 
 @Component
 public class ConsolePersonReader implements PersonReader {
+    private final MessageManager messageManager;
+
     private final Scanner scanner = new Scanner(System.in);
+
+    public ConsolePersonReader(MessageManager messageManager) {
+        this.messageManager = messageManager;
+    }
 
     @Override
     public Person readPerson() {
-        System.out.println("Your last name:");
+        System.out.println(messageManager.getMessage("test.person.lastName"));
         String lastName = scanner.nextLine();
-        System.out.println("Your first name:");
+        System.out.println(messageManager.getMessage("test.person.firstName"));
         String firstName = scanner.nextLine();
         return new Person(lastName, firstName);
     }

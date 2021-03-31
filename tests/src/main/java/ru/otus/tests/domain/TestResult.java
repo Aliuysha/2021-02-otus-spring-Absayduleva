@@ -1,16 +1,20 @@
 package ru.otus.tests.domain;
 
+import ru.otus.tests.service.MessageManager;
+
 public enum TestResult {
-    SUCCESSFUL("You passed the test successfully!"),
-    FAIL("You have failed the test!");
+    SUCCESSFUL {
+        @Override
+        public String getMessage(MessageManager messageManager) {
+            return messageManager.getMessage("test.successful");
+        }
+    },
+    FAIL {
+        @Override
+        public String getMessage(MessageManager messageManager) {
+            return messageManager.getMessage("test.fail");
+        }
+    };
 
-    private final String message;
-
-    TestResult(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
+    public abstract String getMessage(MessageManager messageManager);
 }

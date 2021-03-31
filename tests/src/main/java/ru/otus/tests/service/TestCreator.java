@@ -15,7 +15,11 @@ public class TestCreator {
     private final TestWriter testWriter;
     private final TestResultCreator testResultCreator;
 
-    public TestCreator(TestReader testReader, TestWriter testWriter, TestResultCreator testResultCreator) {
+    public TestCreator(
+            TestReader testReader,
+            TestWriter testWriter,
+            TestResultCreator testResultCreator
+    ) {
         this.testReader = testReader;
         this.testWriter = testWriter;
         this.testResultCreator = testResultCreator;
