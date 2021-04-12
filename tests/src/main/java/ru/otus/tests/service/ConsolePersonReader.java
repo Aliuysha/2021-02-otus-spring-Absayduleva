@@ -9,10 +9,11 @@ import java.util.Scanner;
 public class ConsolePersonReader implements PersonReader {
     private final MessageManager messageManager;
 
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
-    public ConsolePersonReader(MessageManager messageManager) {
+    public ConsolePersonReader(MessageManager messageManager, Scanner scanner) {
         this.messageManager = messageManager;
+        this.scanner = scanner;
     }
 
     @Override
