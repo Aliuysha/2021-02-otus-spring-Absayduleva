@@ -31,13 +31,13 @@ public class AuthorDaoJdbc implements AuthorDao {
     public Author getById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
         return namedParameterJdbcOperations.queryForObject(
-                "select * from authors where id = :id", params, new AuthorMapper()
+                "select a.id, a.name from authors a where id = :id", params, new AuthorMapper()
         );
     }
 
     @Override
     public List<Author> getAll() {
-        return namedParameterJdbcOperations.query("select * from authors", new AuthorMapper());
+        return namedParameterJdbcOperations.query("select a.id, a.name from authors a", new AuthorMapper());
     }
 
     @Override

@@ -32,10 +32,10 @@ public class BookService {
                 book.getName() +
                 "\n" +
                 "автор: " +
-                authorDao.getById(book.getAuthorId()).getName() +
+                book.getAuthor().getName() +
                 "\n" +
                 "жанр: " +
-                genreDao.getById(book.getGenreId()).getName() +
+                book.getGenre().getName() +
                 "\n";
     }
 
@@ -95,7 +95,10 @@ public class BookService {
         }
 
         long books = bookDao.getAll().size();
-        bookDao.insert(new Book(books + 1, name, authorId, genreId));
+        Author author = authorDao.getById(authorId);
+        Genre genre = genreDao.getById(genreId);
+
+        bookDao.insert(new Book(books + 1, name, author, genre));
         return "Книга успешно добавлена";
     }
 
