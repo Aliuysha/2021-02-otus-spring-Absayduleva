@@ -1,6 +1,43 @@
-DROP TABLE IF EXISTS AUTHORS;
-DROP TABLE IF EXISTS GENRES;
-DROP TABLE IF EXISTS BOOKS;
-CREATE TABLE AUTHORS(ID BIGINT PRIMARY KEY, NAME VARCHAR(255));
-CREATE TABLE GENRES(ID BIGINT PRIMARY KEY, NAME VARCHAR(255));
-CREATE TABLE BOOKS(ID BIGINT PRIMARY KEY, NAME VARCHAR(255), AUTHOR_ID INTEGER NOT NULL REFERENCES AUTHORS(ID), GENRE_ID INTEGER NOT NULL REFERENCES GENRES(ID));
+create table books
+(
+    id   bigserial,
+    name varchar(255),
+    primary key (id)
+);
+
+
+create table authors
+(
+    id   bigserial,
+    name varchar(255),
+    primary key (id)
+);
+
+create table genres
+(
+    id   bigserial,
+    name varchar(255),
+    primary key (id)
+);
+
+create table comments
+(
+    id      bigserial,
+    book_id bigint references books (id) on delete cascade,
+    text    varchar(1024),
+    primary key (id)
+);
+
+create table book_authors
+(
+    book_id   bigint references books (id) on delete cascade,
+    author_id bigint references authors (id),
+    primary key (book_id, author_id)
+);
+
+create table book_genres
+(
+    book_id  bigint references books (id) on delete cascade,
+    genre_id bigint references genres (id),
+    primary key (book_id, genre_id)
+);

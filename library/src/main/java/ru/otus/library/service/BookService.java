@@ -1,58 +1,84 @@
 package ru.otus.library.service;
 
 import org.springframework.stereotype.Service;
-import ru.otus.library.dao.AuthorDao;
-import ru.otus.library.dao.BookDao;
-import ru.otus.library.dao.GenreDao;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.library.domain.Author;
 import ru.otus.library.domain.Book;
+import ru.otus.library.domain.Comment;
 import ru.otus.library.domain.Genre;
+import ru.otus.library.repositories.AuthorRepositoryJpa;
+import ru.otus.library.repositories.BookRepositoryJpa;
+import ru.otus.library.repositories.GenreRepositoryJpa;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
+@Transactional
 public class BookService {
     private static final String WRONG_DATA = "Неверные данные";
     private final Reader reader;
     private final Writer writer;
-    private final BookDao bookDao;
-    private final AuthorDao authorDao;
-    private final GenreDao genreDao;
 
-    public BookService(Reader reader, Writer writer, BookDao bookDao, AuthorDao authorDao, GenreDao genreDao) {
+    private final AuthorRepositoryJpa authorRepositoryJpa;
+    private final BookRepositoryJpa bookRepositoryJpa;
+    private final GenreRepositoryJpa genreRepositoryJpa;
+
+    public BookService(
+            Reader reader,
+            Writer writer,
+            AuthorRepositoryJpa authorRepositoryJpa,
+            BookRepositoryJpa bookRepositoryJpa,
+            GenreRepositoryJpa genreRepositoryJpa
+    ) {
         this.reader = reader;
         this.writer = writer;
-        this.bookDao = bookDao;
-        this.authorDao = authorDao;
-        this.genreDao = genreDao;
+        this.authorRepositoryJpa = authorRepositoryJpa;
+        this.bookRepositoryJpa = bookRepositoryJpa;
+        this.genreRepositoryJpa = genreRepositoryJpa;
     }
 
     private String getBookNameFormat(Book book) {
         return book.getId() + " " +
                 book.getName() +
                 "\n" +
-                "автор: " +
-                book.getAuthor().getName() +
+                "авторы: " +
+                getAuthorNameFormat(book.getAuthors()) +
                 "\n" +
-                "жанр: " +
-                book.getGenre().getName() +
+                "жанры: " +
+                getGenreNameFormat(book.getGenres()) +
+                "\n" +
+                "комментарии: " +
+                getCommentNameFormat(book.getComments()) +
                 "\n";
     }
 
-    private String getAuthorNameFormat(Author author) {
-        return author.getId() + " " +
-                author.getName() +
-                "\n";
+    private String getAuthorNameFormat(List<Author> authors) {
+        StringBuilder str = new StringBuilder();
+        for (Author author : authors) {
+            str.append(author.getId()).append(" ").append(author.getName()).append(" \n");
+        }
+        return str.toString();
     }
 
-    private String getGenreNameFormat(Genre genre) {
-        return genre.getId() + " " +
-                genre.getName() +
-                "\n";
+    private String getGenreNameFormat(List<Genre> genres) {
+        StringBuilder str = new StringBuilder();
+        for (Genre genre : genres) {
+            str.append(genre.getId()).append(" ").append(genre.getName()).append(" \n");
+        }
+        return str.toString();
+    }
+
+    private String getCommentNameFormat(List<Comment> comments) {
+        StringBuilder str = new StringBuilder();
+        for (Comment comment : comments) {
+            str.append(comment.getId()).append(" ").append(comment.getText()).append(" \n");
+        }
+        return str.toString();
     }
 
     public String getAllBooks() {
-        List<Book> books = bookDao.getAll();
+        List<Book> books = bookRepositoryJpa.findAll();
         StringBuilder result = new StringBuilder();
         for (Book book : books) {
             result.append(getBookNameFormat(book));
@@ -63,7 +89,8 @@ public class BookService {
     public String getBookById() {
         writer.write("Введите id книги:");
         String id = reader.read();
-        return getBookNameFormat(bookDao.getById(Long.parseLong(id)));
+        Book book = bookRepositoryJpa.findById(Long.parseLong(id)).orElseThrow(EntityNotFoundException::new);
+        return getBookNameFormat(book);
     }
 
     public String insertBook() {
@@ -71,40 +98,44 @@ public class BookService {
         String name = reader.read();
 
         writer.write("Выберите жанр (id):");
-        List<Genre> genres = genreDao.getAll();
-        StringBuilder genreString = new StringBuilder();
-        for (Genre genre : genres) {
-            genreString.append(getGenreNameFormat(genre));
-        }
-        writer.write(genreString.toString());
+        List<Genre> genres = genreRepositoryJpa.findAll();
+
+        writer.write(getGenreNameFormat(genres));
         long genreId = Long.parseLong(reader.read());
         if (genreId > genres.size()) {
             return WRONG_DATA;
         }
 
         writer.write("Выберите автора (id):");
-        List<Author> authors = authorDao.getAll();
-        StringBuilder authorsString = new StringBuilder();
-        for (Author author : authors) {
-            authorsString.append(getAuthorNameFormat(author));
-        }
-        writer.write(authorsString.toString());
+        List<Author> authors = authorRepositoryJpa.findAll();
+
+        writer.write(getAuthorNameFormat(authors));
         long authorId = Long.parseLong(reader.read());
         if (authorId > authors.size()) {
             return WRONG_DATA;
         }
 
-        long books = bookDao.getAll().size();
-        Author author = authorDao.getById(authorId);
-        Genre genre = genreDao.getById(genreId);
+        writer.write("Оставьте комментарий:");
+        String commentText = reader.read();
 
-        bookDao.insert(new Book(books + 1, name, author, genre));
+        Comment comment = new Comment();
+        comment.setText(commentText);
+
+        Author author = authorRepositoryJpa.findById(authorId).orElseThrow(EntityNotFoundException::new);
+        Genre genre = genreRepositoryJpa.findById(genreId).orElseThrow(EntityNotFoundException::new);
+        Book newBook = new Book();
+        newBook.setName(name);
+        newBook.setAuthors(Collections.singletonList(author));
+        newBook.setGenres(Collections.singletonList(genre));
+        newBook.setComments(Collections.singletonList(comment));
+
+        bookRepositoryJpa.save(newBook);
         return "Книга успешно добавлена";
     }
 
     public void deleteBook() {
         writer.write("Введите id книги, которую хотите удалить: ");
         long id = Long.parseLong(reader.read());
-        bookDao.deleteById(id);
+        bookRepositoryJpa.deleteById(id);
     }
 }
