@@ -5,7 +5,6 @@ import ru.otus.library.domain.Comment;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -49,20 +48,14 @@ public class CommentRepositoryJpaImpl implements CommentRepositoryJpa {
 
     @Override
     public void updateTextById(long id, String text) {
-        Query query = em.createQuery("update Comment c " +
-                "set c.text = :text " +
-                "where c.id = :id");
-        query.setParameter("text", text);
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Comment comment = em.find(Comment.class, id);
+        comment.setText(text);
+        em.merge(comment);
     }
 
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete " +
-                "from Comment c " +
-                "where c.id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Comment comment = em.find(Comment.class, id);
+        em.remove(comment);
     }
 }

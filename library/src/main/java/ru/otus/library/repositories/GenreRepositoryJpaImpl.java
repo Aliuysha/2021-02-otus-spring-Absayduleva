@@ -5,7 +5,6 @@ import ru.otus.library.domain.Genre;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -49,20 +48,14 @@ public class GenreRepositoryJpaImpl implements GenreRepositoryJpa {
 
     @Override
     public void updateNameById(long id, String name) {
-        Query query = em.createQuery("update Genre g " +
-                "set g.name = :name " +
-                "where g.id = :id");
-        query.setParameter("name", name);
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Genre genre = em.find(Genre.class, id);
+        genre.setName(name);
+        em.merge(genre);
     }
 
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete " +
-                "from Genre g " +
-                "where g.id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Genre genre = em.find(Genre.class, id);
+        em.remove(genre);
     }
 }

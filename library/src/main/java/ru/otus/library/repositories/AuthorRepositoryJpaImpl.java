@@ -5,7 +5,6 @@ import ru.otus.library.domain.Author;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -49,20 +48,14 @@ public class AuthorRepositoryJpaImpl implements AuthorRepositoryJpa {
 
     @Override
     public void updateNameById(long id, String name) {
-        Query query = em.createQuery("update Author a " +
-                "set a.name = :name " +
-                "where a.id = :id");
-        query.setParameter("name", name);
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Author author = em.find(Author.class, id);
+        author.setName(name);
+        em.merge(author);
     }
 
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete " +
-                "from Author a " +
-                "where a.id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Author author = em.find(Author.class, id);
+        em.remove(author);
     }
 }
