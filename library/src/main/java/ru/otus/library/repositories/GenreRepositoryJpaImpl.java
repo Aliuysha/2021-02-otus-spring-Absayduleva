@@ -1,6 +1,6 @@
 package ru.otus.library.repositories;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import ru.otus.library.domain.Genre;
 
 import javax.persistence.EntityManager;
@@ -9,7 +9,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Component
 public class GenreRepositoryJpaImpl implements GenreRepositoryJpa {
 
     @PersistenceContext

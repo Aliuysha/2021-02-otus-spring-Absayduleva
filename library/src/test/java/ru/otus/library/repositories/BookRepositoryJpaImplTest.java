@@ -85,20 +85,7 @@ public class BookRepositoryJpaImplTest {
         assertThat(books).containsOnlyOnce(firstBook);
     }
 
-    @DisplayName(" должен изменять имя заданной книги по ее id")
-    @Test
-    void shouldUpdateStudentNameById() {
-        val firstBook = em.find(Book.class, EXISTING_BOOK_ID);
-        String oldName = firstBook.getName();
-        em.detach(firstBook);
-
-        repositoryJpa.updateNameById(EXISTING_BOOK_ID, BOOK_NAME);
-        val updatedBook = em.find(Book.class, EXISTING_BOOK_ID);
-
-        assertThat(updatedBook.getName()).isNotEqualTo(oldName).isEqualTo(BOOK_NAME);
-    }
-
-    @DisplayName(" должен удалять заданной книги по ее id")
+    @DisplayName(" должен удалять заданную книгу по ее id")
     @Test
     void shouldDeleteStudentNameById() {
         val firstBook = em.find(Book.class, EXISTING_BOOK_ID);

@@ -21,12 +21,12 @@ public class Book {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(targetEntity = Author.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Author.class)
     @JoinTable(name = "book_authors", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
     private List<Author> authors;
 
-    @ManyToMany(targetEntity = Genre.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Genre.class)
     @JoinTable(name = "book_genres", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;

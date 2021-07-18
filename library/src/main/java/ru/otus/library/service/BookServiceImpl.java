@@ -12,6 +12,7 @@ import ru.otus.library.repositories.GenreRepositoryJpa;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -32,6 +33,7 @@ public class BookServiceImpl implements BookService {
         this.bookUI = bookUI;
     }
 
+    @Transactional
     @Override
     public String getAllBooks() {
         List<Book> books = bookRepositoryJpa.findAll();
@@ -42,6 +44,7 @@ public class BookServiceImpl implements BookService {
         return result.toString();
     }
 
+    @Transactional
     @Override
     public String getBookById() {
         Book book = bookRepositoryJpa.findById(
@@ -90,6 +93,28 @@ public class BookServiceImpl implements BookService {
     public void deleteBook() {
         long id = bookUI.getBookId();
         bookRepositoryJpa.deleteById(id);
+    }
+
+    @Transactional
+    @Override
+    public String getAllCommentsByBook() {
+        long id = bookUI.getBookId();
+        Optional<Book> book = bookRepositoryJpa.findById(id);
+        return book.map(value -> Formatter.getCommentNameFormat(value.getComments()))
+                .orElse(Consts.WRONG_DATA);
+    }
+
+    @Transactional
+    @Override
+    public void updateNameById() {
+        long id = bookUI.getBookId();
+        String bookName = bookUI.getBookName();
+        Optional<Book> optionalBook = bookRepositoryJpa.findById(id);
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.setName(bookName);
+            bookRepositoryJpa.save(book);
+        }
     }
 }
 

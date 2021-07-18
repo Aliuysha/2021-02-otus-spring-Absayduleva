@@ -31,8 +31,8 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
 
     @Override
     public List<Book> findAll() {
-        TypedQuery<Book> query = em.createQuery("select distinct b " +
-                "from Book b left join fetch b.comments", Book.class);
+        TypedQuery<Book> query = em.createQuery("select b " +
+                "from Book b", Book.class);
         return query.getResultList();
     }
 
@@ -42,13 +42,6 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
                 "from Book b where b.name = :name", Book.class);
         query.setParameter("name", name);
         return query.getResultList();
-    }
-
-    @Override
-    public void updateNameById(long id, String name) {
-        Book book = em.find(Book.class, id);
-        book.setName(name);
-        em.merge(book);
     }
 
     @Override

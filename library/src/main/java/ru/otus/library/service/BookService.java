@@ -9,4 +9,8 @@ public interface BookService {
     String insertBook();
 
     void deleteBook();
+
+    String getAllCommentsByBook();
+
+    void updateNameById();
 }
