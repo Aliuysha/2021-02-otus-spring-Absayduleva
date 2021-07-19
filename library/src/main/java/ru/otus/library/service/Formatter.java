@@ -27,7 +27,7 @@ public class Formatter {
                 "\n";
     }
 
-    public static String getAuthorNameFormat(List<Author> authors) {
+    public static String getAuthorNameFormat(Iterable<Author> authors) {
         StringBuilder str = new StringBuilder();
         for (Author author : authors) {
             str.append(author.getId()).append(" ").append(author.getName()).append(" \n");
@@ -35,7 +35,7 @@ public class Formatter {
         return str.toString();
     }
 
-    public static String getGenreNameFormat(List<Genre> genres) {
+    public static String getGenreNameFormat(Iterable<Genre> genres) {
         StringBuilder str = new StringBuilder();
         for (Genre genre : genres) {
             str.append(genre.getId()).append(" ").append(genre.getName()).append(" \n");
@@ -43,7 +43,7 @@ public class Formatter {
         return str.toString();
     }
 
-    public static String getCommentNameFormat(List<Comment> comments) {
+    public static String getCommentNameFormat(Iterable<Comment> comments) {
         StringBuilder str = new StringBuilder();
         for (Comment comment : comments) {
             str.append(comment.getId()).append(" ").append(comment.getText()).append(" \n");

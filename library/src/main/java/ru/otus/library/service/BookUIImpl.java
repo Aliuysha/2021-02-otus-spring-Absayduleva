@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 import ru.otus.library.domain.Author;
 import ru.otus.library.domain.Genre;
 
-import java.util.List;
-
 @Component
 public class BookUIImpl implements BookUI {
     private final BookReader bookReader;
@@ -29,14 +27,14 @@ public class BookUIImpl implements BookUI {
     }
 
     @Override
-    public long getGenreId(List<Genre> genres) {
+    public long getGenreId(Iterable<Genre> genres) {
         bookWriter.writeText(Consts.CHOOSE_GENRE);
         bookWriter.writeText(Formatter.getGenreNameFormat(genres));
         return bookReader.readId();
     }
 
     @Override
-    public long getAuthorId(List<Author> authors) {
+    public long getAuthorId(Iterable<Author> authors) {
         bookWriter.writeText(Consts.CHOOSE_AUTHOR);
         bookWriter.writeText(Formatter.getAuthorNameFormat(authors));
         return bookReader.readId();

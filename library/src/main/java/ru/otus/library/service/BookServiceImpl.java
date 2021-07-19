@@ -36,7 +36,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public String getAllBooks() {
-        List<Book> books = bookRepositoryJpa.findAll();
+        Iterable<Book> books = bookRepositoryJpa.findAll();
         StringBuilder result = new StringBuilder();
         for (Book book : books) {
             result.append(Formatter.getBookNameFormat(book));
@@ -58,18 +58,11 @@ public class BookServiceImpl implements BookService {
     public String insertBook() {
         String name = bookUI.getBookName();
 
-        List<Genre> genres = genreRepositoryJpa.findAll();
+        Iterable<Genre> genres = genreRepositoryJpa.findAll();
         long genreId = bookUI.getGenreId(genres);
 
-        if (genreId > genres.size()) {
-            return Consts.WRONG_DATA;
-        }
-
-        List<Author> authors = authorRepositoryJpa.findAll();
+        Iterable<Author> authors = authorRepositoryJpa.findAll();
         long authorId = bookUI.getAuthorId(authors);
-        if (authorId > authors.size()) {
-            return Consts.WRONG_DATA;
-        }
 
         String commentText = bookUI.getComment();
 
