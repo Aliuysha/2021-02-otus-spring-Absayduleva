@@ -31,4 +31,15 @@ public class ShellCommands {
     public void deleteBook() {
         bookService.deleteBook();
     }
+
+    @ShellMethod(value = "Get all comments by id command", key = {"c", "comment"})
+    public String getAllComments() {
+        return bookService.getAllCommentsByBook();
+    }
+
+    @ShellMethod(value = "Change book name by id command", key = {"ch", "change"})
+    public void changeBookName() {
+        bookService.updateNameById();
+    }
+
 }
