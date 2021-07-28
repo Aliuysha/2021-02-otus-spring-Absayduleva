@@ -1,0 +1,14 @@
+spring:
+  data:
+    mongodb:
+      database: library
+
+    jpa:
+      repositories:
+        enabled: false
+
+mongock:
+  #runner-type: "ApplicationRunner" # default
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - spring.ru.otus.library.mongock.changelog
