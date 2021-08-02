@@ -23,23 +23,23 @@ public class BookUIImpl implements BookUI {
     }
 
     @Override
-    public long getBookId() {
+    public String getBookId() {
         bookWriter.writeText(Consts.INTER_BOOK_ID);
-        return bookReader.readId();
+        return bookReader.readStringId();
     }
 
     @Override
-    public long getGenreId(List<Genre> genres) {
+    public String getGenreId(List<Genre> genres) {
         bookWriter.writeText(Consts.CHOOSE_GENRE);
         bookWriter.writeText(Formatter.getGenreNameFormat(genres));
-        return bookReader.readId();
+        return bookReader.readStringId();
     }
 
     @Override
-    public long getAuthorId(List<Author> authors) {
+    public String getAuthorId(List<Author> authors) {
         bookWriter.writeText(Consts.CHOOSE_AUTHOR);
         bookWriter.writeText(Formatter.getAuthorNameFormat(authors));
-        return bookReader.readId();
+        return bookReader.readStringId();
     }
 
     @Override

@@ -16,6 +16,11 @@ public class BookReaderImpl implements BookReader {
     }
 
     @Override
+    public String readStringId() {
+        return reader.read();
+    }
+
+    @Override
     public String readText() {
         return reader.read();
     }

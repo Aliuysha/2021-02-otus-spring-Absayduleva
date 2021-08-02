@@ -4,5 +4,7 @@ public interface BookReader {
 
     long readId();
 
+    String readStringId();
+
     String readText();
 }

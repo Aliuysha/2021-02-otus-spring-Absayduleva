@@ -8,11 +8,11 @@ import java.util.List;
 public interface BookUI {
     String getBookName();
 
-    long getBookId();
+    String getBookId();
 
-    long getGenreId(List<Genre> genres);
+    String getGenreId(List<Genre> genres);
 
-    long getAuthorId(List<Author> authors);
+    String getAuthorId(List<Author> authors);
 
     String getComment();
 
