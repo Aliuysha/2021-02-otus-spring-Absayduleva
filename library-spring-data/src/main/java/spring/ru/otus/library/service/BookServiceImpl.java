@@ -1,41 +1,43 @@
-package ru.otus.library.service;
+package spring.ru.otus.library.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.library.domain.Author;
-import ru.otus.library.domain.Book;
-import ru.otus.library.domain.Comment;
-import ru.otus.library.domain.Genre;
-import ru.otus.library.repositories.AuthorRepositoryJpa;
-import ru.otus.library.repositories.BookRepositoryJpa;
-import ru.otus.library.repositories.GenreRepositoryJpa;
+import spring.ru.otus.library.domain.Author;
+import spring.ru.otus.library.domain.Book;
+import spring.ru.otus.library.domain.Comment;
+import spring.ru.otus.library.domain.Genre;
+import spring.ru.otus.library.repositories.AuthorRepository;
+import spring.ru.otus.library.repositories.BookRepository;
+import spring.ru.otus.library.repositories.GenreRepository;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class BookServiceImpl implements BookService {
-    private final AuthorRepositoryJpa authorRepositoryJpa;
-    private final BookRepositoryJpa bookRepositoryJpa;
-    private final GenreRepositoryJpa genreRepositoryJpa;
+    private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
+    private final GenreRepository genreRepository;
     private final BookUI bookUI;
 
     public BookServiceImpl(
-            AuthorRepositoryJpa authorRepositoryJpa,
-            BookRepositoryJpa bookRepositoryJpa,
-            GenreRepositoryJpa genreRepositoryJpa,
+            AuthorRepository authorRepository,
+            BookRepository bookRepository,
+            GenreRepository genreRepository,
             BookUI bookUI
     ) {
-        this.authorRepositoryJpa = authorRepositoryJpa;
-        this.bookRepositoryJpa = bookRepositoryJpa;
-        this.genreRepositoryJpa = genreRepositoryJpa;
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
+        this.genreRepository = genreRepository;
         this.bookUI = bookUI;
     }
 
     @Transactional
     @Override
     public String getAllBooks() {
-        Iterable<Book> books = bookRepositoryJpa.findAll();
+        List<Book> books = bookRepository.findAll();
         StringBuilder result = new StringBuilder();
         for (Book book : books) {
             result.append(Formatter.getBookNameFormat(book));
@@ -46,7 +48,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public String getBookById() {
-        Book book = bookRepositoryJpa.findById(
+        Book book = bookRepository.findById(
                 bookUI.getBookId()).orElseThrow(EntityNotFoundException::new
         );
         return Formatter.getBookNameFormat(book);
@@ -57,41 +59,43 @@ public class BookServiceImpl implements BookService {
     public String insertBook() {
         String name = bookUI.getBookName();
 
-        Iterable<Genre> genres = genreRepositoryJpa.findAll();
-        long genreId = bookUI.getGenreId(genres);
+        List<Genre> genres = genreRepository.findAll();
+        String genreId = bookUI.getGenreId(genres);
 
-        Iterable<Author> authors = authorRepositoryJpa.findAll();
-        long authorId = bookUI.getAuthorId(authors);
+        List<Author> authors = authorRepository.findAll();
+        String authorId = bookUI.getAuthorId(authors);
 
         String commentText = bookUI.getComment();
 
         Comment comment = new Comment();
+        comment.setId(UUID.randomUUID().toString());
         comment.setText(commentText);
 
-        Author author = authorRepositoryJpa.findById(authorId).orElseThrow(EntityNotFoundException::new);
-        Genre genre = genreRepositoryJpa.findById(genreId).orElseThrow(EntityNotFoundException::new);
+        Author author = authorRepository.findById(authorId).orElseThrow(EntityNotFoundException::new);
+        Genre genre = genreRepository.findById(genreId).orElseThrow(EntityNotFoundException::new);
         Book newBook = new Book();
+        newBook.setId(UUID.randomUUID().toString());
         newBook.setName(name);
         newBook.setAuthors(Collections.singletonList(author));
         newBook.setGenres(Collections.singletonList(genre));
         newBook.setComments(Collections.singletonList(comment));
 
-        bookRepositoryJpa.save(newBook);
+        bookRepository.save(newBook);
         return Consts.SUCCESSFUL_BOOK;
     }
 
     @Transactional
     @Override
     public void deleteBook() {
-        long id = bookUI.getBookId();
-        bookRepositoryJpa.deleteById(id);
+        String id = bookUI.getBookId();
+        bookRepository.deleteById(id);
     }
 
     @Transactional
     @Override
     public String getAllCommentsByBook() {
-        long id = bookUI.getBookId();
-        Optional<Book> book = bookRepositoryJpa.findById(id);
+        String id = bookUI.getBookId();
+        Optional<Book> book = bookRepository.findById(id);
         return book.map(value -> Formatter.getCommentNameFormat(value.getComments()))
                 .orElse(Consts.WRONG_DATA);
     }
@@ -99,13 +103,13 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void updateNameById() {
-        long id = bookUI.getBookId();
+        String id = bookUI.getBookId();
         String bookName = bookUI.getBookName();
-        Optional<Book> optionalBook = bookRepositoryJpa.findById(id);
+        Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
             book.setName(bookName);
-            bookRepositoryJpa.save(book);
+            bookRepository.save(book);
         }
     }
 }
