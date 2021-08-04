@@ -49,7 +49,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String getBookById() {
         Book book = bookRepository.findById(
-                bookUI.getBookId()).orElseThrow(EntityNotFoundException::new
+                UUID.fromString(bookUI.getBookId())).orElseThrow(EntityNotFoundException::new
         );
         return Formatter.getBookNameFormat(book);
     }
@@ -68,13 +68,13 @@ public class BookServiceImpl implements BookService {
         String commentText = bookUI.getComment();
 
         Comment comment = new Comment();
-        comment.setId(UUID.randomUUID().toString());
+        comment.setId(UUID.randomUUID());
         comment.setText(commentText);
 
-        Author author = authorRepository.findById(authorId).orElseThrow(EntityNotFoundException::new);
-        Genre genre = genreRepository.findById(genreId).orElseThrow(EntityNotFoundException::new);
+        Author author = authorRepository.findById(UUID.fromString(authorId)).orElseThrow(EntityNotFoundException::new);
+        Genre genre = genreRepository.findById(UUID.fromString(genreId)).orElseThrow(EntityNotFoundException::new);
         Book newBook = new Book();
-        newBook.setId(UUID.randomUUID().toString());
+        newBook.setId(UUID.randomUUID());
         newBook.setName(name);
         newBook.setAuthors(Collections.singletonList(author));
         newBook.setGenres(Collections.singletonList(genre));
@@ -88,14 +88,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBook() {
         String id = bookUI.getBookId();
-        bookRepository.deleteById(id);
+        bookRepository.deleteById(UUID. fromString(id));
     }
 
     @Transactional
     @Override
     public String getAllCommentsByBook() {
         String id = bookUI.getBookId();
-        Optional<Book> book = bookRepository.findById(id);
+        Optional<Book> book = bookRepository.findById(UUID.fromString(id));
         return book.map(value -> Formatter.getCommentNameFormat(value.getComments()))
                 .orElse(Consts.WRONG_DATA);
     }
@@ -105,7 +105,7 @@ public class BookServiceImpl implements BookService {
     public void updateNameById() {
         String id = bookUI.getBookId();
         String bookName = bookUI.getBookName();
-        Optional<Book> optionalBook = bookRepository.findById(id);
+        Optional<Book> optionalBook = bookRepository.findById(UUID.fromString(id));
         if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
             book.setName(bookName);

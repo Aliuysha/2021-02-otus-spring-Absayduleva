@@ -4,9 +4,14 @@ import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
 import io.changock.migration.api.annotations.ChangeLog;
 import spring.ru.otus.library.domain.Author;
+import spring.ru.otus.library.domain.Book;
 import spring.ru.otus.library.domain.Genre;
 import spring.ru.otus.library.repositories.AuthorRepository;
+import spring.ru.otus.library.repositories.BookRepository;
 import spring.ru.otus.library.repositories.GenreRepository;
+
+import java.util.List;
+import java.util.UUID;
 
 @ChangeLog
 public class DatabaseChangelog {
@@ -33,5 +38,19 @@ public class DatabaseChangelog {
 
         genreRepository.save(horror);
         genreRepository.save(detective);
+    }
+
+    @ChangeSet(order = "004", id = "insertBooks", author = "aliya")
+    public void insertBooks(BookRepository bookRepository, GenreRepository genreRepository, AuthorRepository authorRepository) {
+        List<Genre> genres = genreRepository.findAll();
+        List<Author> authors = authorRepository.findAll();
+
+        Book book = new Book();
+        book.setName("Книга 1");
+        book.setAuthors(authors);
+        book.setGenres(genres);
+        book.setId(UUID.randomUUID());
+
+        bookRepository.save(book);
     }
 }

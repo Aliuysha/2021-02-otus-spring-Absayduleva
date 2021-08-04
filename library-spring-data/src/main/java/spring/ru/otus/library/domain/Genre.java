@@ -11,13 +11,13 @@ import java.util.UUID;
 @Document(collection = "genres")
 public class Genre {
     @Id
-    private String id;
+    private UUID id;
 
     @Field("name")
     private String name;
 
     public Genre(String name) {
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID();
         this.name = name;
     }
 }
