@@ -15,7 +15,7 @@ public class ShellCommands {
 
     @ShellMethod(value = "Get all books command", key = {"b", "books"})
     public String getAllBooks() {
-        return bookService.getAllBooks();
+        return bookService.getAllBooksToString();
     }
 
     @ShellMethod(value = "New book command", key = {"n", "new"})

@@ -7,22 +7,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import spring.ru.otus.library.dto.BookDto;
+import spring.ru.otus.library.service.BookService;
 import spring.ru.otus.library.web.service.AuthorWebService;
-import spring.ru.otus.library.web.service.BookWebService;
 import spring.ru.otus.library.web.service.GenreWebService;
 
-import java.util.List;
 import java.util.UUID;
 
 @Controller
-public class BookController {
+public class BookPageController {
 
-    private final BookWebService bookService;
+    private final BookService bookService;
     private final GenreWebService genreWebService;
     private final AuthorWebService authorWebService;
 
-    public BookController(
-            BookWebService bookService,
+    public BookPageController(
+            BookService bookService,
             GenreWebService genreWebService,
             AuthorWebService authorWebService
     ) {
@@ -32,9 +31,7 @@ public class BookController {
     }
 
     @GetMapping("/")
-    public String listPage(Model model) {
-        List<BookDto> books = bookService.getAllBooks();
-        model.addAttribute("books", books);
+    public String listPage() {
         return "list";
     }
 

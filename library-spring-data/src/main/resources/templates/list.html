@@ -13,6 +13,7 @@
             padding: 5px;
         }
     </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <h1>Books:</h1>
@@ -30,26 +31,45 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="book : ${books}">
-        <td th:text="${book.id}">1</td>
-        <td th:text="${book.name}">It</td>
-        <td>
-            <li th:each="author : ${book.authors}" th:text="${author.name}">
-                Author1, Author2
-        </td>
-        <td>
-            <li th:each="genre : ${book.genres}" th:text="${genre.name}">
-                Genre1, Genre2
-        </td>
-        <td>
-            <li th:each="comment : ${book.comments}" th:text="${comment.text}">
-                Comment1, Comment2
-        <td>
-            <a th:href="@{/edit(id=${book.id})}" href="edit.html">Edit</a>
-            <a th:href="@{/delete(id=${book.id})}">Delete</a>
-        </td>
-    </tr>
     </tbody>
 </table>
+<script>
+    $(function () {
+        $.get('/api/books').done(function (books) {
+            books.forEach(function (book) {
+                    $('tbody').append(`
+                    <tr>
+                        <td>${book.id}</td>
+                         <td>${book.name}</td>
+                         <td id="authors">
+                         </td>
+                         <td id="genres">
+                         </td>
+                         <td id="comments">
+                         </td>
+                         <td>
+                            <a href="/edit(id=${book.id})">Edit</a>
+                            <a href="/delete(id=${book.id})">Delete</a>
+                         </td>
+                    </tr>
+                    `)
+                        .append(book.authors.forEach(function (author) {
+                                $('#authors').append(`<li>${author.name}</li>`)
+                            }
+                        ))
+                        .append(book.genres.forEach(function (genre) {
+                                $('#genres').append(`<li>${genre.name}</li>`)
+                            }
+                        ))
+                        .append(book.comments.forEach(function (comment) {
+                                $('#comments').append(`<li>${comment.text}</li>`)
+                            }
+                        ))
+                }
+            )
+        })
+    });
+</script>
 </body>
+
 </html>

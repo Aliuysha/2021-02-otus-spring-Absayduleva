@@ -5,11 +5,13 @@ import com.mongodb.client.MongoDatabase;
 import io.changock.migration.api.annotations.ChangeLog;
 import spring.ru.otus.library.domain.Author;
 import spring.ru.otus.library.domain.Book;
+import spring.ru.otus.library.domain.Comment;
 import spring.ru.otus.library.domain.Genre;
 import spring.ru.otus.library.repositories.AuthorRepository;
 import spring.ru.otus.library.repositories.BookRepository;
 import spring.ru.otus.library.repositories.GenreRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,6 +53,11 @@ public class DatabaseChangelog {
         book.setGenres(genres);
         book.setId(UUID.randomUUID());
 
+        Comment comment = new Comment();
+        comment.setId(UUID.randomUUID());
+        comment.setText("text");
+
+        book.setComments(Collections.singletonList(comment));
         bookRepository.save(book);
     }
 }

@@ -1,8 +1,13 @@
 package spring.ru.otus.library.service;
 
+import spring.ru.otus.library.dto.BookDto;
+
+import java.util.List;
+import java.util.UUID;
+
 public interface BookService {
 
-    String getAllBooks();
+    String getAllBooksToString();
 
     String getBookById();
 
@@ -13,4 +18,12 @@ public interface BookService {
     String getAllCommentsByBook();
 
     void updateNameById();
+
+    List<BookDto> getAllBooks();
+
+    BookDto getBookById(UUID id);
+
+    BookDto insertBook(BookDto bookDto);
+
+    void deleteBookById(UUID id);
 }
