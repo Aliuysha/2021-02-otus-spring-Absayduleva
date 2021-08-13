@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.UUID;
 
 @Data
 @Document(collection = "comments")
@@ -13,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Comment {
 
     @Id
-    private String id;
+    private UUID id;
 
     @Field("text")
     private String text;

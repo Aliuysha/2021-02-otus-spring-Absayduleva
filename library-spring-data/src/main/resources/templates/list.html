@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books, .books td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>Books:</h1>
+<a th:href="@{/new}" href="new.html">Add new book</a>
+
+<table class="Books">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Authors</th>
+        <th>Genres</th>
+        <th>Comments</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    $(function () {
+        $.get('/api/books').done(function (books) {
+            books.forEach(function (book) {
+                    $('tbody').append(`
+                    <tr>
+                        <td>${book.id}</td>
+                         <td>${book.name}</td>
+                         <td id="authors">
+                         </td>
+                         <td id="genres">
+                         </td>
+                         <td id="comments">
+                         </td>
+                         <td>
+                            <a href="/edit?id=${book.id}">Edit</a>
+                            <a href="/delete?id=${book.id}">Delete</a>
+                         </td>
+                    </tr>
+                    `)
+                        .append(book.authors.forEach(function (author) {
+                                $('#authors').append(`<li>${author.name}</li>`)
+                            }
+                        ))
+                        .append(book.genres.forEach(function (genre) {
+                                $('#genres').append(`<li>${genre.name}</li>`)
+                            }
+                        ))
+                        .append(book.comments.forEach(function (comment) {
+                                $('#comments').append(`<li>${comment.text}</li>`)
+                            }
+                        ))
+                }
+            )
+        })
+    });
+</script>
+</body>
+
+</html>

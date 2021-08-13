@@ -12,13 +12,13 @@ import java.util.UUID;
 public class Author {
 
     @Id
-    private String id;
+    private UUID id;
 
     @Field("name")
     private String name;
 
     public Author(String name) {
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID();
         this.name = name;
     }
 }
