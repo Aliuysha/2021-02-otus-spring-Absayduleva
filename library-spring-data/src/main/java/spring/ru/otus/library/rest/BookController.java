@@ -2,22 +2,21 @@ package spring.ru.otus.library.rest;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import spring.ru.otus.library.dto.BookDto;
-import spring.ru.otus.library.service.BookService;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import spring.ru.otus.library.domain.Book;
+import spring.ru.otus.library.repositories.BookRepository;
 
 @RestController
 public class BookController {
 
-    private final BookService bookService;
+    private final BookRepository bookRepository;
 
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
+    public BookController(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
     }
 
     @GetMapping("/api/books")
-    public List<BookDto> getAllBooks() {
-        return bookService.getAllBooks();
+    public Flux<Book> getAllBooks() {
+        return bookRepository.findAll();
     }
 }

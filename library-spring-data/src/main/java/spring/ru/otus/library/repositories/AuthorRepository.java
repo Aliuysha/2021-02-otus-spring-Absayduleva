@@ -1,9 +1,8 @@
 package spring.ru.otus.library.repositories;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import spring.ru.otus.library.domain.Author;
 
-import java.util.UUID;
 
-public interface AuthorRepository extends MongoRepository<Author, UUID> {
+public interface AuthorRepository extends ReactiveMongoRepository<Author, String> {
 }

@@ -3,6 +3,7 @@ package spring.ru.otus.library.mongock.changelog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
 import io.changock.migration.api.annotations.ChangeLog;
+import reactor.core.publisher.Flux;
 import spring.ru.otus.library.domain.Author;
 import spring.ru.otus.library.domain.Book;
 import spring.ru.otus.library.domain.Comment;
@@ -11,9 +12,8 @@ import spring.ru.otus.library.repositories.AuthorRepository;
 import spring.ru.otus.library.repositories.BookRepository;
 import spring.ru.otus.library.repositories.GenreRepository;
 
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
 
 @ChangeLog
 public class DatabaseChangelog {
@@ -28,36 +28,35 @@ public class DatabaseChangelog {
         Author stivenKing = new Author("Stiven King");
         Author dariaDoncova = new Author("Дарья донцова");
 
-        authorRepository.save(stivenKing);
-        authorRepository.save(dariaDoncova);
+        authorRepository.saveAll(Arrays.asList(
+                stivenKing, dariaDoncova
+        )).subscribe();
     }
 
     @ChangeSet(order = "003", id = "insertGenres", author = "aliya")
     public void insertGenres(GenreRepository genreRepository) {
         Genre horror = new Genre("хоррор");
-
         Genre detective = new Genre("детектив");
 
-        genreRepository.save(horror);
-        genreRepository.save(detective);
+        genreRepository.saveAll(Arrays.asList(
+                horror, detective
+        )).subscribe();
     }
 
     @ChangeSet(order = "004", id = "insertBooks", author = "aliya")
     public void insertBooks(BookRepository bookRepository, GenreRepository genreRepository, AuthorRepository authorRepository) {
-        List<Genre> genres = genreRepository.findAll();
-        List<Author> authors = authorRepository.findAll();
+        Flux<Genre> genres = genreRepository.findAll();
+        Flux<Author> authors = authorRepository.findAll();
 
         Book book = new Book();
         book.setName("Книга 1");
-        book.setAuthors(authors);
-        book.setGenres(genres);
-        book.setId(UUID.randomUUID());
+        book.setAuthors(authors.collectList().block());
+        book.setGenres(genres.collectList().block());
 
         Comment comment = new Comment();
-        comment.setId(UUID.randomUUID());
         comment.setText("text");
 
         book.setComments(Collections.singletonList(comment));
-        bookRepository.save(book);
+        bookRepository.save(book).subscribe();
     }
 }
