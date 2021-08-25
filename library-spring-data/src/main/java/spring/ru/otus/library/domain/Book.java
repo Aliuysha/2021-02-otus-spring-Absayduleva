@@ -7,14 +7,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Document(collection = "books")
 @NoArgsConstructor
 public class Book {
     @Id
-    private UUID id;
+    private String id;
 
     @Field("name")
     private String name;

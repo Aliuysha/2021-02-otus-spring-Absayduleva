@@ -2,14 +2,13 @@ package spring.ru.otus.library.dto;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
+import spring.ru.otus.library.domain.Comment;
 
 @Component
-public class CommentConverter implements Converter<String, CommentDto> {
+public class CommentConverter implements Converter<String, Comment> {
 
     @Override
-    public CommentDto convert(String s) {
-        return new CommentDto(UUID.randomUUID(), s);
+    public Comment convert(String text) {
+        return new Comment(text);
     }
 }

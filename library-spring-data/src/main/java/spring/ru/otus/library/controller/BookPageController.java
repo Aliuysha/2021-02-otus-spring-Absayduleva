@@ -6,28 +6,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import spring.ru.otus.library.dto.BookDto;
-import spring.ru.otus.library.service.BookService;
-import spring.ru.otus.library.web.service.AuthorWebService;
-import spring.ru.otus.library.web.service.GenreWebService;
-
-import java.util.UUID;
+import reactor.core.publisher.Mono;
+import spring.ru.otus.library.domain.Book;
+import spring.ru.otus.library.repositories.AuthorRepository;
+import spring.ru.otus.library.repositories.BookRepository;
+import spring.ru.otus.library.repositories.GenreRepository;
 
 @Controller
 public class BookPageController {
 
-    private final BookService bookService;
-    private final GenreWebService genreWebService;
-    private final AuthorWebService authorWebService;
+    private final BookRepository bookRepository;
+    private final GenreRepository genreRepository;
+    private final AuthorRepository authorRepository;
 
     public BookPageController(
-            BookService bookService,
-            GenreWebService genreWebService,
-            AuthorWebService authorWebService
+            BookRepository bookRepository,
+            GenreRepository genreRepository,
+            AuthorRepository authorRepository
     ) {
-        this.bookService = bookService;
-        this.genreWebService = genreWebService;
-        this.authorWebService = authorWebService;
+        this.bookRepository = bookRepository;
+        this.genreRepository = genreRepository;
+        this.authorRepository = authorRepository;
     }
 
     @GetMapping("/")
@@ -36,41 +35,40 @@ public class BookPageController {
     }
 
     @GetMapping("/edit")
-    public String editPage(@RequestParam("id") UUID id, Model model) {
-        BookDto book = bookService.getBookById(id);
+    public String editPage(@RequestParam("id") String id, Model model) {
+        Book book = bookRepository.findById(id).block();
         model.addAttribute("book", book);
         return "edit";
     }
 
     @GetMapping("/delete")
-    public String deletePage(@RequestParam("id") UUID id) {
-        bookService.deleteBookById(id);
+    public String deletePage(@RequestParam("id") String id) {
+        bookRepository.deleteById(id).subscribe();
         return "redirect:/";
     }
 
     @PostMapping("/save")
     public String saveBook(
-            BookDto bookDto,
+            Book book,
             Model model
     ) {
-        BookDto saved = bookService.insertBook(bookDto);
-        model.addAttribute(saved);
-        return "redirect:/edit?id=" + saved.getId();
+        Mono<Book> saved = bookRepository.save(book);
+        model.addAttribute(saved.block());
+        return "redirect:/edit?id=" + saved.block().getId();
     }
 
     @GetMapping("/new")
     public String newBook(Model model) {
-        BookDto bookDto = new BookDto();
-        model.addAttribute("book", bookDto);
-        model.addAttribute("authorsList", authorWebService.getAllAuthors());
-        model.addAttribute("genresList", genreWebService.getAllGenres());
+        Book book = new Book();
+        model.addAttribute("book", book);
+        model.addAttribute("authorsList", authorRepository.findAll().collectList().block());
+        model.addAttribute("genresList", genreRepository.findAll().collectList().block());
         return "new";
     }
 
     @PostMapping("/new")
-    public String newBook(@ModelAttribute("book") BookDto bookDto) {
-        bookDto.setId(UUID.randomUUID());
-        bookService.insertBook(bookDto);
+    public String newBook(@ModelAttribute("book") Book book) {
+        bookRepository.save(book).subscribe();
         return "redirect:/";
     }
 }
